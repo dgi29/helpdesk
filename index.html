@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>數位客服｜官方服務</title>
+  <title>数位客服｜官方服务</title>
   <style>
     :root{
       --bg:#f5f7fb;
@@ -191,6 +191,66 @@
       background:#fff;font-size:11px;color:var(--muted);
       margin-right:6px;
     }
+
+    /* ====== 表单弹窗（Modal） ====== */
+    .modal-mask{
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(2,6,23,.55);
+      z-index:9999;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+    }
+    .modal{
+      width:100%;
+      max-width:560px;
+      height:min(82vh,720px);
+      background:#fff;
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid rgba(226,232,240,.9);
+      box-shadow:0 18px 60px rgba(2,6,23,.25);
+      display:flex;
+      flex-direction:column;
+    }
+    .modal-hd{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:12px 12px;
+      background:linear-gradient(180deg,#ffffff,#f8fafc);
+      border-bottom:1px solid var(--line);
+    }
+    .modal-hd b{font-size:13px;}
+    .modal-hd .hint{font-size:12px;color:var(--muted);}
+    .modal-close{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:12px;
+      padding:8px 10px;
+      cursor:pointer;
+      font-weight:700;
+      font-size:12px;
+    }
+    .modal-close:hover{border-color:#cbd5e1;}
+    .modal iframe{
+      width:100%;
+      height:100%;
+      border:0;
+      background:#fff;
+    }
+    .modal-ft{
+      padding:10px 12px;
+      border-top:1px solid var(--line);
+      background:#fff;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+    .modal-ft a{color:#1d4ed8;text-decoration:none;font-weight:700;}
+    .modal-ft a:hover{text-decoration:underline;}
   </style>
 </head>
 <body>
@@ -198,27 +258,26 @@
     <div class="topbar">
       <div class="brand">
         <div class="logo" aria-hidden="true">
-          <!-- 你也可以換成公司logo（svg/png） -->
           <span style="font-weight:900;font-size:16px;">◎</span>
         </div>
         <div style="min-width:0">
-          <h1>官方數位客服</h1>
-          <div class="sub">自助查詢與操作指引｜必要時可轉接真人協助</div>
+          <h1>官方数位客服</h1>
+          <div class="sub">自助查询与操作指引｜必要时可转接真人协助</div>
         </div>
       </div>
-      <div class="chip" title="服務狀態">
+      <div class="chip" title="服务状态">
         <span style="display:inline-block;width:8px;height:8px;border-radius:999px;background:#22c55e;"></span>
-        服務中
+        服务中
       </div>
     </div>
 
     <div class="grid">
-      <!-- Left: chat + quick cards -->
+      <!-- Left -->
       <div class="panel">
         <div class="panel-hd">
           <div>
-            <div class="t">常用服務</div>
-            <div class="s">點選快速取得官方指引</div>
+            <div class="t">常用服务</div>
+            <div class="s">点选快速取得官方指引</div>
           </div>
           <div class="s" id="clock"></div>
         </div>
@@ -228,8 +287,8 @@
               <div class="k">
                 <div class="ic">🧾</div>
                 <div>
-                  <p class="ttl">保固 / 售後流程</p>
-                  <div class="d">查詢處理方式、需要準備哪些資料</div>
+                  <p class="ttl">保固 / 售后流程</p>
+                  <div class="d">查询处理方式、需要准备哪些资料</div>
                 </div>
               </div>
             </button>
@@ -238,8 +297,8 @@
               <div class="k">
                 <div class="ic">👤</div>
                 <div>
-                  <p class="ttl">會員 / 服務啟用</p>
-                  <div class="d">啟用方式、常見問題與注意事項</div>
+                  <p class="ttl">会员 / 服务启用</p>
+                  <div class="d">启用方式、常见问题与注意事项</div>
                 </div>
               </div>
             </button>
@@ -248,8 +307,8 @@
               <div class="k">
                 <div class="ic">📘</div>
                 <div>
-                  <p class="ttl">產品操作教學</p>
-                  <div class="d">常見設定、基本操作、連線方式</div>
+                  <p class="ttl">产品操作教学</p>
+                  <div class="d">常见设定、基本操作、连线方式</div>
                 </div>
               </div>
             </button>
@@ -258,8 +317,8 @@
               <div class="k">
                 <div class="ic">💬</div>
                 <div>
-                  <p class="ttl">聯繫真人客服</p>
-                  <div class="d">若需要人工協助，可改用官方管道</div>
+                  <p class="ttl">联繫真人客服</p>
+                  <div class="d">若需要人工协助，可改用官方管道</div>
                 </div>
               </div>
             </button>
@@ -267,52 +326,77 @@
 
           <div class="note">
             <span class="tag">官方提醒</span>
-            本頁提供「自助指引」與「資料準備清單」。若涉及個資、付款、訂單異動或特殊狀況，請改用官方管道聯繫真人客服，以確保資訊安全。
+            本页提供「自助指引」与「资料准备清单」。若涉及个资、付款、订单异动或特殊状况，请改用官方管道联繫真人客服，以确保资讯安全。
           </div>
         </div>
 
         <div class="chat">
           <div class="msgs" id="msgs"></div>
           <div class="inputbar">
-            <input id="q" placeholder="請簡述問題，例如：保固、會員啟用、操作教學、無法登入…" />
+            <input id="q" placeholder="请简述问题，例如：保固、会员启用、操作教学、无法登入…" />
             <button class="send" onclick="send()">送出</button>
           </div>
         </div>
       </div>
 
-      <!-- Right: status / hints -->
+      <!-- Right -->
       <div class="panel right">
         <div class="panel-hd">
           <div>
-            <div class="t">服務小幫手</div>
-            <div class="s">讓回覆更精準的小提示</div>
+            <div class="t">服务小帮手</div>
+            <div class="s">让回覆更精准的小提示</div>
           </div>
         </div>
         <div class="panel-bd">
           <div class="kpi">
             <div class="item">
-              <div class="h"><b>建議提供</b><span>可複製</span></div>
+              <div class="h"><b>建议提供</b><span>可複製</span></div>
               <div class="p">
-                1) 產品型號　2) 序號（SN）　3) 問題描述<br/>
-                4) 相關照片/影片（如有）　5) 使用情境
+                1) 产品型号　2) 序号（SN）　3) 问题描述<br/>
+                4) 相关照片/影片（如有）　5) 使用情境
               </div>
             </div>
             <div class="item">
-              <div class="h"><b>服務時間</b><span>參考</span></div>
-              <div class="p">一般回覆時段：09:00–22:00（依官方公告為準）</div>
+              <div class="h"><b>服务时间</b><span>参考</span></div>
+              <div class="p">一般回覆时段：09:00–22:00（依官方公告为准）</div>
             </div>
             <div class="item">
-              <div class="h"><b>需要人工？</b><span>快速導引</span></div>
-              <div class="p">點左側「聯繫真人客服」會出現官方聯繫方式與建議話術。</div>
-              <a class="linkbtn" href="#" onclick="quick('contact');return false;">前往聯繫方式</a>
+              <div class="h"><b>需要人工？</b><span>快速导引</span></div>
+              <div class="p">点左侧「联繫真人客服」会出现官方联繫方式与建议话术。</div>
+              <a class="linkbtn" href="#" onclick="quick('contact');return false;">前往联繫方式</a>
             </div>
           </div>
 
           <div class="foot">
             <span class="tag">版本</span>Official UI v1<br/>
-            你之後想換「頭貼/Logo/色系/文案」，只要改這個檔案即可。
+            你之后想换「头贴/Logo/色系/文案」，只要改这个档案即可。
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== 表单弹窗（放在 body 结尾） ====== -->
+  <div class="modal-mask" id="warrantyModal" role="dialog" aria-modal="true" aria-label="保固/服务申请表">
+    <div class="modal">
+      <div class="modal-hd">
+        <div>
+          <b>保固启动 / 服务申请</b>
+          <div class="hint">填写完成后按「送出」，系统会自动记录时间</div>
+        </div>
+        <button class="modal-close" onclick="closeWarranty()">关闭</button>
+      </div>
+
+      <!-- 你表单的连结在这裡 -->
+      <iframe
+        id="warrantyFrame"
+        src="https://forms.gle/E88onbLK3miLYenv6"
+        title="保固启动 / 服务申请表"
+      ></iframe>
+
+      <div class="modal-ft">
+        若送出后需要回到聊天视窗，请点右上角「关闭」。<br/>
+        ※ 本表单仅供保固启动与售后服务申请使用，不提供任何内容下载或第三方代办服务。
       </div>
     </div>
   </div>
@@ -329,20 +413,15 @@
     return `${hh}:${mm}`;
   }
   function setClock(){
-    $("clock").textContent = `更新時間 ${nowTime()}`;
+    $("clock").textContent = `更新时间 ${nowTime()}`;
   }
   setClock(); setInterval(setClock, 15000);
 
-  // 你可以把這裡換成你的客服頭貼（建議 64x64 png）
-  // 方式一：使用 emoji（目前用這個）
-  // 方式二：改成 <img src="..." />，例如放到 repo 內：avatar.png
   function botAvatar(){
     const div = document.createElement("div");
     div.className = "avatar";
     div.title = "官方客服";
     div.textContent = "🤖";
-    // 若要改成圖片，改成下面兩行並把上面的 textContent 刪掉：
-    // div.innerHTML = '<img src="avatar.png" alt="客服頭貼">';
     return div;
   }
 
@@ -352,7 +431,7 @@
     const av = botAvatar();
     const bubble = document.createElement("div");
     bubble.className = "bubble";
-    bubble.innerHTML = html + `<div class="meta">${nowTime()}・官方數位客服</div>`;
+    bubble.innerHTML = html + `<div class="meta">${nowTime()}・官方数位客服</div>`;
     row.appendChild(av);
     row.appendChild(bubble);
     msgs.appendChild(row);
@@ -374,69 +453,88 @@
     return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   }
 
-  // ====== 內容（官方合規版） ======
+  // ====== 表单弹窗控制 ======
+  function openWarranty(){
+    const m = $("warrantyModal");
+    m.style.display = "flex";
+  }
+  function closeWarranty(){
+    const m = $("warrantyModal");
+    m.style.display = "none";
+  }
+  // 点遮罩关闭（点弹窗本体不关闭）
+  $("warrantyModal").addEventListener("click", (e)=>{
+    if(e.target && e.target.id === "warrantyModal") closeWarranty();
+  });
+
+  // ====== 内容（官方合规版） ======
   const KB = {
     welcome: `
-      <p><b>您好，我是官方數位客服。</b></p>
-      <p>我可以協助：保固/售後、會員/服務啟用、產品操作教學、常見問題排除。</p>
+      <p><b>您好，我是官方数位客服。</b></p>
+      <p>我可以协助：保固/售后、会员/服务启用、产品操作教学、常见问题排除。</p>
       <div class="btnline">
-        <button class="mini" onclick="quick('warranty')">保固 / 售後</button>
-        <button class="mini" onclick="quick('member')">會員 / 啟用</button>
-        <button class="mini" onclick="quick('howto')">操作教學</button>
-        <button class="mini" onclick="quick('contact')">聯繫真人</button>
+        <button class="mini" onclick="quick('warranty')">保固 / 售后</button>
+        <button class="mini" onclick="quick('member')">会员 / 启用</button>
+        <button class="mini" onclick="quick('howto')">操作教学</button>
+        <button class="mini" onclick="quick('contact')">联繫真人</button>
       </div>
     `,
     warranty: `
-      <p><b>保固 / 售後流程</b></p>
+      <p><b>保固 / 售后流程</b></p>
       <ul>
-        <li>請先準備：型號、SN 序號、購買日期（或發票/訂單截圖）。</li>
-        <li>描述問題：何時發生、是否可重現、畫面/聲音狀況。</li>
-        <li>若需送修：建議先拍 10–20 秒短影片，利於判斷。</li>
+        <li>请先准备：型号、SN 序号、购买日期（或发票/订单截图）。</li>
+        <li>描述问题：何时发生、是否可重现、画面/声音状况。</li>
+        <li>若需送修：建议先拍 10–20 秒短影片，利于判断。</li>
       </ul>
-      <p>若要我提供更精準的流程，請回覆：<b>型號 + SN + 問題描述</b>。</p>
+
+      <p style="margin-top:10px;"><b>要直接送出资料给后台？</b></p>
+      <div class="btnline">
+        <button class="mini" onclick="openWarranty()">🧾 立即填写「保固启动 / 服务申请」</button>
+      </div>
+
+      <div style="margin-top:10px;font-size:12px;color:#64748b;line-height:1.5;">
+        ※ 本表单仅供保固启动与售后服务申请使用，不提供任何内容下载或第三方代办服务。
+      </div>
     `,
     member: `
-      <p><b>會員 / 服務啟用指引</b></p>
+      <p><b>会员 / 服务启用指引</b></p>
       <ul>
-        <li>請確認設備已連網（Wi-Fi/有線網路）。</li>
-        <li>準備 SN 序號與購買資訊，以便核對服務狀態。</li>
-        <li>若顯示到期/不足月份：可提供畫面截圖與 SN 讓客服協助查核。</li>
+        <li>请确认设备已连网（Wi-Fi/有线网路）。</li>
+        <li>准备 SN 序号与购买资讯，以便核对服务状态。</li>
+        <li>若显示到期/不足月份：可提供画面截图与 SN 让客服协助查核。</li>
       </ul>
-      <p>你可以直接輸入：<b>「會員」</b>、<b>「啟用」</b>、或貼上 SN（不含個資）我會引導你下一步。</p>
+      <p>你可以直接输入：<b>「会员」</b>、<b>「启用」</b>、或贴上 SN（不含个资）我会引导你下一步。</p>
     `,
     howto: `
-      <p><b>產品操作教學（常用）</b></p>
+      <p><b>产品操作教学（常用）</b></p>
       <ul>
-        <li>連線：HDMI / AV / 3.5mm 音源線的接法與注意事項</li>
-        <li>基本設定：音量/麥克風音量/回音與常用模式</li>
-        <li>常見狀況：無畫面、有聲音、或播放異常的排查方向</li>
+        <li>连线：HDMI / AV / 3.5mm 音源线的接法与注意事项</li>
+        <li>基本设定：音量/麦克风音量/回音与常用模式</li>
+        <li>常见状况：无画面、有声音、或播放异常的排查方向</li>
       </ul>
-      <p>請告訴我你想查哪一項：<b>「連線」</b>、<b>「麥克風」</b>、<b>「沒畫面」</b>、<b>「播放異常」</b>。</p>
+      <p>请告诉我你想查哪一项：<b>「连线」</b>、<b>「麦克风」</b>、<b>「没画面」</b>、<b>「播放异常」</b>。</p>
     `,
     contact: `
-      <p><b>聯繫真人客服</b></p>
-      <p>若你需要人工協助（涉及帳務、訂單、個資或特殊案例），建議改用官方管道：</p>
+      <p><b>联繫真人客服</b></p>
+      <p>若你需要人工协助（涉及帐务、订单、个资或特殊案例），建议改用官方管道：</p>
       <ul>
-        <li>官方 Line：<b>（請在此填入你的官方 Line 連結/QR）</b></li>
-        <li>客服電話：<b>（請在此填入電話）</b></li>
-        <li>表單回報：<b>（請在此填入表單連結）</b></li>
+        <li>官方 Line：<b>（请在此填入你的官方 Line 连结/QR）</b></li>
+        <li>客服电话：<b>（请在此填入电话）</b></li>
+        <li>保固/服务申请：<button class="mini" onclick="openWarranty()">🧾 点我填表</button></li>
       </ul>
-      <p><b>建議話術</b>：我想協助查核，型號是＿＿，SN 是＿＿，問題是＿＿（附照片/影片）。</p>
+      <p><b>建议话术</b>：我想协助查核，型号是＿＿，SN 是＿＿，问题是＿＿（附照片/影片）。</p>
     `
   };
 
-  // ====== 關鍵字回覆（最基本、可控、官方感） ======
+  // ====== 关键字回覆（最基本、可控、官方感） ======
   function route(text){
     const t = text.toLowerCase();
 
-    // 官方導向：不做違法/繞責任的教學，只做合規指引
-    if (t.includes("保固") || t.includes("送修") || t.includes("維修") || t.includes("報修")) return "warranty";
-    if (t.includes("會員") || t.includes("啟用") || t.includes("開通") || t.includes("到期")) return "member";
-    if (t.includes("教學") || t.includes("怎麼用") || t.includes("操作") || t.includes("設定")) return "howto";
-    if (t.includes("聯繫") || t.includes("真人") || t.includes("客服") || t.includes("line") || t.includes("電話")) return "contact";
-
-    // 常見字：連線/沒畫面/麥克風 → 先導向操作教學
-    if (t.includes("hdmi") || t.includes("沒畫面") || t.includes("無畫面") || t.includes("麥克風") || t.includes("聲音")) return "howto";
+    if (t.includes("保固") || t.includes("送修") || t.includes("维修") || t.includes("报修")) return "warranty";
+    if (t.includes("会员") || t.includes("启用") || t.includes("开通") || t.includes("到期")) return "member";
+    if (t.includes("教学") || t.includes("怎麽用") || t.includes("操作") || t.includes("设定")) return "howto";
+    if (t.includes("联繫") || t.includes("真人") || t.includes("客服") || t.includes("line") || t.includes("电话")) return "contact";
+    if (t.includes("hdmi") || t.includes("没画面") || t.includes("无画面") || t.includes("麦克风") || t.includes("声音")) return "howto";
 
     return "welcome";
   }
@@ -452,16 +550,13 @@
     $("q").value = "";
 
     const key = route(v);
-    // 這裡可以做更細的 KB 拆分，但先給你官方版穩定結構
     setTimeout(()=> quick(key), 250);
   }
 
-  // Enter 送出
   $("q").addEventListener("keydown", (e)=>{
     if(e.key==="Enter") send();
   });
 
-  // 首次歡迎訊息
   quick("welcome");
 </script>
 </body>
