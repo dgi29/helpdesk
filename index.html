@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>數位客服</title>
+  <style>
+    :root { --bg:#f5f7fb; --card:#ffffff; --text:#1f2937; --muted:#6b7280; --brand:#2563eb; --line:#e5e7eb; }
+    body { margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", Arial, sans-serif; background:var(--bg); color:var(--text); }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 16px; }
+    .header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; background:var(--card); border:1px solid var(--line); border-radius:14px; }
+    .header h1 { margin:0; font-size:16px; font-weight:700; }
+    .header .sub { font-size:12px; color:var(--muted); }
+    .btn { border:1px solid var(--line); background:#fff; color:var(--text); border-radius:999px; padding:8px 12px; cursor:pointer; font-size:12px; }
+    .btn.primary { background:var(--brand); color:#fff; border-color:transparent; }
+    .panel { margin-top:12px; background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+    .quick { display:flex; flex-wrap:wrap; gap:8px; padding:12px; border-bottom:1px solid var(--line); background:#fbfdff; }
+    .chat { padding: 12px; height: 52vh; overflow:auto; }
+    .msg { display:flex; margin:10px 0; gap:10px; }
+    .msg.user { justify-content:flex-end; }
+    .bubble { max-width: 85%; padding:10px 12px; border-radius:14px; border:1px solid var(--line); background:#fff; font-size:14px; line-height:1.45; white-space:pre-wrap; }
+    .msg.user .bubble { background:#eaf2ff; border-color:#cfe0ff; }
+    .meta { font-size:11px; color:var(--muted); margin-top:4px; }
+    .inputbar { display:flex; gap:10px; padding:12px; border-top:1px solid var(--line); background:#fff; }
+    input { flex:1; border:1px solid var(--line); border-radius:12px; padding:12px; font-size:14px; outline:none; }
+    .send { padding:12px 14px; border-radius:12px; border:0; background:var(--brand); color:#fff; cursor:pointer; font-weight:700; }
+    a { color: var(--brand); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div>
+        <h1>數位客服</h1>
+        <div class="sub">固定教學 + 關鍵字回覆（合規版 / 不提供破解內容）</div>
+      </div>
+      <button class="btn" id="resetBtn">重新對話</button>
+    </div>
+
+    <div class="panel">
+      <div class="quick" id="quickBtns"></div>
+      <div class="chat" id="chat"></div>
+      <div class="inputbar">
+        <input id="input" placeholder="請輸入問題（例：保固、會員、歌庫、操作教學、HDMI、麥克風）" />
+        <button class="send" id="sendBtn">送出</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+/** ============================
+ *  你只需要改這一區：內容與連結
+ *  ============================ */
+
+// 1) 快捷按鈕（你想要的固定問題）
+const QUICK = [
+  { key: "warranty", label: "啟動保固" },
+  { key: "member",   label: "開通會員" },
+  { key: "library",  label: "開通歌庫" },
+  { key: "howto",    label: "產品操作教學" },
+  { key: "hdmi",     label: "HDMI 沒畫面" },
+  { key: "mic",      label: "麥克風沒聲音" },
+  { key: "youtube",  label: "YouTube 無法播放" },
+  { key: "contact",  label: "聯繫方式" },
+];
+
+// 2) 固定回覆內容（合規：只寫官方/授權流程、操作教學、故障排除）
+const ANSWERS = {
+  welcome:
+`你好，我是數位客服（固定教學＋關鍵字回覆）。
+你可以：
+1) 直接點上方快捷按鈕
+2) 或輸入關鍵字（例：保固、會員、歌庫、操作、HDMI、麥克風、YouTube）
+
+提醒：本頁僅提供「操作教學 / 故障排除 / 授權與官方渠道申請流程」資訊。`,
+
+  warranty:
+`【啟動保固｜流程】
+1) 準備：產品型號、S/N 序號、購買證明（或購買日期）
+2) 依「官方/授權渠道」指示完成登錄（若你有登錄頁可放連結）
+3) 完成後保留登錄成功畫面或通知
+
+✅ 建議你先準備：S/N 序號照片（機身標籤）
+（登錄連結：填你自己的連結）
+`,
+
+  member:
+`【開通會員｜合規流程】
+1) 先確認：設備已連網（Wi-Fi/網路線）
+2) 準備：S/N 序號、會員資料（依官方規定）
+3) 依官方/授權渠道頁面提交申請
+
+若你不確定要填什麼：請回覆「會員 + 你的設備型號」，我會提示你需要準備哪些資料。
+（申請頁/說明頁：填連結）
+`,
+
+  library:
+`【開通歌庫｜合規說明】
+本機為「純淨版」出貨，未預載任何內容。
+如需使用內容/歌庫，請依「官方或授權服务」提供的申請方式開通與下載。
+
+你可以：
+1) 先確認設備已連網
+2) 準備 S/N 序號
+3) 依官方/授權渠道完成申請
+
+（官方說明/申請入口：填連結）
+`,
+
+  howto:
+`【產品操作教學】
+你可以先選擇你要學的主題：
+- 連接方式（電視/音響）
+- 點歌/操作介面
+- USB 加歌（若你要提供）
+- 常見設定（音量、輸出模式）
+
+👉 直接輸入「操作 + 你要的主題」，
+例如：操作 連接音響 / 操作 USB加歌
+（教學影片：填連結）
+`,
+
+  hdmi:
+`【HDMI 沒畫面｜快速排查】
+1) 確認電視訊號源已切到正確 HDMI
+2) 拔插 HDMI 線（兩端都重插）
+3) 更換 HDMI 線測試（排除線材故障）
+4) 若「有聲音沒畫面」：多半是訊號源/線材/孔位問題
+
+仍未解決：請回覆「HDMI + 電視品牌型號 + 有沒有聲音 + 你接哪個HDMI孔」，或改用聯繫方式。
+`,
+
+  mic:
+`【麥克風沒聲音｜常見原因】
+1) 先確認：你有沒有「接音響/擴大機」？
+2) 若使用藍牙喇叭：部分機型麥克風可能不經擴大機而無聲（需用 3.5mm/AUX/紅白線等有線輸出）
+3) 確認接收器/音源線是否插牢、音量是否過低
+
+請回覆：你的型號 + 你是「藍牙」或「有線」連接，我再給你對應步驟。
+`,
+
+  youtube:
+`【YouTube 無法播放｜建議處理】
+1) 先確認網路正常（可改用手機熱點測試）
+2) 重開機後再試一次
+3) 若出現錯誤碼：請把「錯誤碼截圖/文字」貼上來（例：152-15）
+
+（你也可以放你自己的教學頁：填連結）
+`,
+
+  contact:
+`【聯繫方式】
+若你需要真人協助，請準備：
+- 型號、S/N、問題描述、照片/影片
+
+👉 官方Line：填你的Line連結（例如：https://lin.ee/xxxx）
+👉 表單留言：填你的表單連結
+👉 客服信箱：填你的Email（建議用表單，不要直接暴露Email也行）
+`,
+};
+
+// 3) 關鍵字規則（越簡單越穩）
+const RULES = [
+  { keywords: ["保固", "啟動", "登錄", "註冊保固"], answerKey: "warranty" },
+  { keywords: ["會員", "續約", "到期", "會員開通"], answerKey: "member" },
+  { keywords: ["歌庫", "曲庫", "內容", "開通歌庫", "下載歌曲"], answerKey: "library" },
+  { keywords: ["操作", "教學", "怎麼用", "新手", "設定"], answerKey: "howto" },
+  { keywords: ["hdmi", "沒畫面", "黑屏", "綠屏", "有聲音沒畫面"], answerKey: "hdmi" },
+  { keywords: ["麥克風", "mic", "沒聲音", "無聲"], answerKey: "mic" },
+  { keywords: ["youtube", "不能播放", "無法播放", "152-15"], answerKey: "youtube" },
+  { keywords: ["聯繫", "真人", "客服", "line", "電話", "信箱", "表單"], answerKey: "contact" },
+];
+
+/** ============================
+ *  下面不太需要改：介面與邏輯
+ *  ============================ */
+
+const chatEl = document.getElementById("chat");
+const inputEl = document.getElementById("input");
+const sendBtn = document.getElementById("sendBtn");
+const resetBtn = document.getElementById("resetBtn");
+const quickBtnsEl = document.getElementById("quickBtns");
+
+function nowTime() {
+  const d = new Date();
+  return d.toLocaleString("zh-TW", { hour:"2-digit", minute:"2-digit" });
+}
+
+function addMsg(role, text) {
+  const msg = document.createElement("div");
+  msg.className = `msg ${role}`;
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.innerHTML = linkify(text);
+  const meta = document.createElement("div");
+  meta.className = "meta";
+  meta.textContent = nowTime();
+  const wrap = document.createElement("div");
+  wrap.appendChild(bubble);
+  wrap.appendChild(meta);
+  msg.appendChild(wrap);
+  chatEl.appendChild(msg);
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
+
+function linkify(text) {
+  // very simple linkify
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return text.replace(urlRegex, (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`);
+}
+
+function detectAnswer(userText) {
+  const t = (userText || "").trim().toLowerCase();
+  for (const r of RULES) {
+    for (const k of r.keywords) {
+      if (t.includes(k.toLowerCase())) return r.answerKey;
+    }
+  }
+  return null;
+}
+
+function botReplyByKey(key) {
+  const text = ANSWERS[key] || `我這題目前沒有對應的固定教學。\n你可以點上方快捷按鈕，或換個方式問：例如「會員 開通」/「HDMI 沒畫面」/「麥克風 沒聲音」。`;
+  addMsg("bot", text);
+}
+
+function initQuickButtons() {
+  quickBtnsEl.innerHTML = "";
+  QUICK.forEach(item => {
+    const b = document.createElement("button");
+    b.className = "btn";
+    b.textContent = item.label;
+    b.onclick = () => {
+      addMsg("user", item.label);
+      botReplyByKey(item.key);
+    };
+    quickBtnsEl.appendChild(b);
+  });
+}
+
+function resetChat() {
+  chatEl.innerHTML = "";
+  addMsg("bot", ANSWERS.welcome);
+}
+
+sendBtn.onclick = () => {
+  const text = inputEl.value.trim();
+  if (!text) return;
+  addMsg("user", text);
+  inputEl.value = "";
+  const key = detectAnswer(text);
+  if (key) botReplyByKey(key);
+  else botReplyByKey("unknown");
+};
+
+inputEl.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") sendBtn.click();
+});
+
+resetBtn.onclick = resetChat;
+
+initQuickButtons();
+resetChat();
+</script>
+</body>
+</html>
