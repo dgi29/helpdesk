@@ -253,64 +253,91 @@
     .modal-ft a:hover{text-decoration:underline;}
 
     /* ==========================================================
-       ✅ 手機版修正（合併版）— 只影響手機，不影響桌機
-       ========================================================== */
-    @media (max-width: 768px) {
+   ✅ 手機版修正（只加：輸入框固定在底部）
+   其他不動
+   ========================================================== */
+@media (max-width: 768px) {
 
-      /* 整體左右留白縮小 */
-      .wrap { padding: 8px; }
+  /* 整體左右留白縮小 */
+  .wrap { padding: 8px; }
 
-      /* 手機隱藏右側小幫手（最關鍵） */
-      .right { display: none !important; }
+  /* 手機隱藏右側小幫手（最關鍵） */
+  .right { display: none !important; }
 
-      /* grid 強制只留一欄 */
-      .grid { grid-template-columns: 1fr !important; }
+  /* grid 強制只留一欄 */
+  .grid { grid-template-columns: 1fr !important; }
 
-      /* topbar 間距更舒服 */
-      .topbar { border-radius: 18px; padding: 12px 12px; }
+  /* topbar 間距更舒服 */
+  .topbar { border-radius: 18px; padding: 12px 12px; }
 
-      /* 卡片改單欄、變好點 */
-      .cards { grid-template-columns: 1fr !important; }
-      .cardbtn { padding: 14px; }
+  /* 卡片改單欄、變好點 */
+  .cards { grid-template-columns: 1fr !important; }
+  .cardbtn { padding: 14px; }
 
-      /* 聊天高度跟著手機螢幕（避免輸入區被擠到超小） */
-      .chat { height: calc(100vh - 240px); }
+  /* ✅ 不要用 calc(100vh - 240px) 這種（會把輸入框擠扁） */
+  .chat { height: auto; }
 
-      /* 訊息區縮一點 */
-      .msgs { padding: 10px; }
+  /* ✅ 讓訊息區底部留空，避免被固定輸入框蓋住 */
+  .msgs {
+    padding: 10px;
+    padding-bottom: calc(84px + env(safe-area-inset-bottom) + 12px);
+  }
 
-      /* 輸入列貼底、好按（sticky） */
-      .inputbar {
-        position: sticky;
-        bottom: 0;
-        padding: 10px;
-        gap: 8px;
-      }
+  /* ✅ 輸入列固定在最底（像蝦皮） */
+  .inputbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
 
-      /* iOS：字體 16px 避免輸入時畫面縮放 */
-      .inputbar input {
-        font-size: 16px;
-        padding: 14px 14px;
-        border-radius: 14px;
-      }
+    /* 視覺與手感 */
+    background: #fff;
+    border-top: 1px solid var(--line);
+    padding: 10px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    gap: 8px;
 
-      /* 送出按鈕更大顆 */
-      .send {
-        padding: 14px 16px;
-        font-size: 15px;
-        border-radius: 14px;
-      }
+    /* 跟你的內容置中、同寬 */
+    max-width: 920px;
+    width: calc(100% - 16px);
+    margin: 0 auto;
 
-      /* modal 手機高度更合理 */
-      .modal-mask { padding: 10px; }
-      .modal {
-        max-width: 100%;
-        height: min(86vh, 760px);
-        border-radius: 16px;
-      }
-      .modal-hd { padding: 10px 10px; }
-      .modal-ft { padding: 10px 10px; }
-    }
+    /* 一點點陰影更像 app */
+    border-radius: 14px 14px 0 0;
+    box-shadow: 0 -10px 24px rgba(2,6,23,.08);
+  }
+
+  /* ✅ 整頁底部留白，避免內容被 fixed 輸入列壓住 */
+  .wrap{
+    padding-bottom: calc(84px + env(safe-area-inset-bottom) + 16px);
+  }
+
+  /* iOS：字體 16px 避免輸入時畫面縮放 */
+  .inputbar input {
+    font-size: 16px;
+    padding: 14px 14px;
+    border-radius: 14px;
+  }
+
+  /* 送出按鈕更大顆 */
+  .send {
+    padding: 14px 16px;
+    font-size: 15px;
+    border-radius: 14px;
+    white-space: nowrap;
+  }
+
+  /* modal 手機高度更合理（保留你原本的） */
+  .modal-mask { padding: 10px; }
+  .modal {
+    max-width: 100%;
+    height: min(86vh, 760px);
+    border-radius: 16px;
+  }
+  .modal-hd { padding: 10px 10px; }
+  .modal-ft { padding: 10px 10px; }
+}
   </style>
 </head>
 <body>
