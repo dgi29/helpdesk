@@ -647,12 +647,17 @@
 
   // ====== Avatar / 安全字元 ======
   function botAvatar(){
-    const div = document.createElement("div");
-    div.className = "avatar";
-    div.title = "官方客服";
-    div.textContent = "🤖";
-    return div;
-  }
+  const div = document.createElement("div");
+  div.className = "avatar";
+  div.title = "官方客服";
+
+  const img = document.createElement("img");
+  img.src = "https://wwcdn.weixin.qq.com/node/wework/images/qrcode_logo.7d1af620e9.png";
+  img.alt = "DANMS 官方客服";
+
+  div.appendChild(img);
+  return div;
+}
 
   function escapeHtml(s){
     return s.replace(/[&<>"']/g, m => ({
