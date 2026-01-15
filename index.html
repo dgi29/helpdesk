@@ -253,8 +253,7 @@
     .modal-ft a:hover{text-decoration:underline;}
 
     /* ==========================================================
-       ✅ 手機版：只新增「輸入框固定在最底」+ 避免訊息被蓋住
-       其他不動
+       ✅ 手機版：A 方案（常用服務變「2x2 快捷按鈕」） + 輸入框固定
        ========================================================== */
     @media (max-width: 768px) {
 
@@ -262,8 +261,30 @@
       .right { display: none !important; }
       .grid { grid-template-columns: 1fr !important; }
       .topbar { border-radius: 18px; padding: 12px 12px; }
-      .cards { grid-template-columns: 1fr !important; }
-      .cardbtn { padding: 14px; }
+
+      /* ✅ A方案：常用服務改成 2 欄快捷按鈕（更省高度、不空） */
+      .panel-bd{ padding: 10px 12px; }
+      .cards{
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px;
+      }
+      .cardbtn{
+        padding: 10px 10px;
+        border-radius: 14px;
+      }
+      .cardbtn .d{ display: none; }  /* 隱藏描述，立刻不空 */
+      .ic{
+        width: 30px;
+        height: 30px;
+        border-radius: 10px;
+      }
+      .cardbtn .ttl{
+        font-size: 13px;
+        margin: 0;
+      }
+
+      /* 聊天高度跟手機螢幕走（避免被擠） */
       .chat { height: calc(100vh - 240px); }
 
       /* ✅ 訊息區底部留白：避免被固定輸入框蓋住 */
