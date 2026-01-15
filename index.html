@@ -377,7 +377,7 @@
               <div class="k">
                 <div class="ic">👤</div>
                 <div>
-                  <p class="ttl">会员 / 服务启用</p>
+                  <p class="ttl">歌庫/服务启用</p>
                   <div class="d">启用方式、常见问题与注意事项</div>
                 </div>
               </div>
@@ -480,6 +480,32 @@
     </div>
   </div>
 
+  <!-- ====== 教學影片弹窗（放在 script 前面） ====== -->
+  <div class="modal-mask" id="videoModal" role="dialog" aria-modal="true" aria-label="操作教學影片">
+    <div class="modal">
+      <div class="modal-hd">
+        <div>
+          <b>操作教學影片</b>
+          <div class="hint">若影片無法播放，請改用 YouTube App 開啟</div>
+        </div>
+        <button class="modal-close" onclick="closeVideo()">关闭</button>
+      </div>
+
+      <iframe
+        id="videoFrame"
+        src=""
+        title="操作教學影片"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+      ></iframe>
+
+      <div class="modal-ft">
+        看完後點右上角「关闭」回到聊天。
+      </div>
+    </div>
+  </div>
+
+
 <script>
   // ====== 基本工具 ======
   const $ = (id)=>document.getElementById(id);
@@ -541,9 +567,32 @@
     const m = $("warrantyModal");
     m.style.display = "none";
   }
+
+  // ====== 教學影片弹窗控制 ======
+  function openVideo(url){
+    const m = $("videoModal");
+    const f = $("videoFrame");
+    f.src = url;
+    m.style.display = "flex";
+  }
+
+  function closeVideo(){
+    const m = $("videoModal");
+    const f = $("videoFrame");
+    m.style.display = "none";
+    f.src = ""; // 關掉時停止播放
+  }
+
+  $("videoModal").addEventListener("click", (e)=>{
+    if(e.target && e.target.id === "videoModal") closeVideo();
+  });
+
+
+
   $("warrantyModal").addEventListener("click", (e)=>{
     if(e.target && e.target.id === "warrantyModal") closeWarranty();
   });
+
 
   // ====== 内容（官方合规版） ======
   const KB = {
@@ -567,41 +616,86 @@
 
       <p style="margin-top:10px;"><b>要直接送出资料给后台？</b></p>
       <div class="btnline">
-        <button class="mini" onclick="openWarranty()">🧾 立即填写「保固启动 / 服务申请」</button>
-      </div>
+        <button class="mini" onclick="openWarranty()">🧾 立即填写「保固启动 / 服务申请」</button>   
+</div>
+
 
       <div style="margin-top:10px;font-size:12px;color:#64748b;line-height:1.5;">
         ※ 本表单仅供保固启动与售后服务申请使用，不提供任何内容下载或第三方代办服务。
       </div>
     `,
     member: `
-      <p><b>会员 / 服务启用指引</b></p>
+      <p><b>歌庫 / 服务启用指引</b></p>
       <ul>
         <li>请确认设备已连网（Wi-Fi/有线网路）。</li>
         <li>准备 SN 序号与购买资讯，以便核对服务状态。</li>
-        <li>若显示到期/不足月份：可提供画面截图与 SN 让客服协助查核。</li>
+        <li>填寫申請表單</li>
       </ul>
-      <p>你可以直接输入：<b>「会员」</b>、<b>「启用」</b>、或贴上 SN（不含个资）我会引导你下一步。</p>
-    `,
+
+ <p style="margin-top:10px;"><b>要直接送出资料给后台？</b></p>
+
+<div class="btnline">
+  <button class="mini" onclick="openWarranty()">🧾 立即填寫「歌庫啟動 / 服務申請」</button>
+  <button class="mini" onclick="closeWarranty(); quick('afterForm')">✅ 已填寫完畢</button>
+</div>
+
+ <div style="margin-top:10px;font-size:12px;color:#64748b;line-height:1.5;">
+        ※ 本表单仅供保固启动与售后服务申请使用，不提供任何内容下载或第三方代办服务。
+      </div>
+
+
+         `,
     howto: `
       <p><b>产品操作教学（常用）</b></p>
       <ul>
         <li>连线：HDMI / AV / 3.5mm 音源线的接法与注意事项</li>
         <li>基本设定：音量/麦克风音量/回音与常用模式</li>
         <li>常见状况：无画面、有声音、或播放异常的排查方向</li>
+<p style="margin-top:10px;"><b>要直接送出资料给后台？</b></p>
+      <div class="btnline">
+        <button class="mini" onclick="openWarranty()">🧾 立即填写「保固启动 / 服务申请」</button>
+      </div>
+
       </ul>
       <p>请告诉我你想查哪一项：<b>「连线」</b>、<b>「麦克风」</b>、<b>「没画面」</b>、<b>「播放异常」</b>。</p>
     `,
     contact: `
       <p><b>联繫真人客服</b></p>
       <p>若你需要人工协助（涉及帐务、订单、个资或特殊案例），建议改用官方管道：</p>
+      <p>真人回覆时段：08:00–17:00（依官方公告为准）</p>
+      
       <ul>
         <li>官方WeChat：<b>13178828652</b></li>
         <li>客服电话：<b>13178828652</b></li>
         <li>保固/服务申请：<button class="mini" onclick="openWarranty()">🧾 点我填表</button></li>
       </ul>
       <p><b>建议</b>：我想协助查核，型号是＿＿，SN 是＿＿，问题是＿＿（附照片/影片）。</p>
-    `
+    `,
+    afterForm: `
+      <p><b>✅ 已填寫完成</b></p>
+      <p>請依序操作（照做通常 1–3 分鐘內會刷新）：</p>
+     <ul>
+    <li><b>步驟 1｜確認提交成功</b>：表單送出後，畫面需顯示「已送出 / 提交成功」。</li>
+    <li><b>步驟 2｜確認 SN 無誤</b>：再次核對 SN 碼（建議對照機器貼紙或系統頁）。</li>
+    <li><b>步驟 3｜確認網路正常</b>：Wi-Fi/有線網路可正常上網（可開任一網頁測試）。</li>
+    <li><b>步驟 4｜刷新歌庫</b>：进入「曲库管理」→ 點選「扫描 / 更新曲库」。</li>
+    <li><b>步驟 5｜重新開機</b>：关机 → 等 10 秒 → 再开机。</li>
+    <li><b>步驟 6｜等待同步</b>：开机后请先等待几分钟让系统同步更新。</li>
+    <li><b>若仍未更新</b>：回到「步驟 4」再掃一次歌庫 → 再重開機一次。</li>
+    <li><b>仍無法</b>：可至「系统」→「恢复出厂设置」（建議先看教學影片再操作）。</li>
+  </ul>
+
+     <div class="btnline">
+    <button class="mini" onclick="openVideo('https://www.youtube.com/embed/4QgmwaGuXOc')">🎬 查看操作教學影片</button>
+
+    <button class="mini" onclick="quick('contact')">联繫真人客服</button>
+  </div>
+
+      <div style="margin-top:10px;font-size:12px;color:#64748b;line-height:1.55;">
+       若扔無更新可聯繫真人客服或查看教學影片。
+      </div>
+    `,
+
   };
 
   function route(text){
